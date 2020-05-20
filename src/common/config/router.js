@@ -10,9 +10,11 @@ let routes = [
         // path:'/index',
         // name:'index',
         // component:()=> import('../../views/index/index.vue')
+        meta:{title:'后台首页'},
         component:'index/index'
       },
       {
+        meta:{title:'商品列表'},
         component:'shop/goods/list'
       }
     ]
@@ -20,6 +22,7 @@ let routes = [
   {
     // path:'/login',
     // name:'login',
+    meta:{title:'登录'},
     component:'login/index',
     
   },
@@ -49,6 +52,8 @@ function createRoute(arr){
     }
     let pathFun = `/${val}`
     arr[i].path = arr[i].path || pathFun
+    // console.log(pathFun);
+    
   }
 }
 //去除index
