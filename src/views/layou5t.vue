@@ -32,7 +32,7 @@
       <el-container style="height:100%;">
         <el-aside width="200px">
           <!-- //侧边布局 -->
-          <el-menu default-active="0" @select="slideSelect" style="height:100%;">
+          <el-menu :default-active="slideMenuActive" @select="slideSelect" style="height:100%;">
             <el-menu-item
               :index="index | numToString"
               v-for="(item,index) in slideActive"
