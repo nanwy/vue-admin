@@ -1,29 +1,32 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col-12 col-sm-8 col-md-7 col-lg-6 m-auto 
-      mt-10 pt-5">
-        <div class="card mt-5">
-          <div class="card-header bg-white">
-            <h3 class="text-center mb-0 text-secondary">{{$conf.logo}}</h3>
-          </div>
-          <div class="card-body">
-            <el-form ref="ruleForm" :model="form" :rules="rules">
-              <el-form-item prop="username">
-                <el-input v-model="form.username" size='medium' placeholder="请输入同户名"></el-input>
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input v-model="form.password" type="password" size="medium" placeholder="请输入密码"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" class="w-100" size="medium"
-                @click="submit">立即登录</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <el-menu text-color="#2d2d2d" id="navid" class="nav" mode="vertical" @select="handleSelect">
+ <el-menu-item class="logo" index="0" route="/home">
+ <img class="logoimg" alt="logo" />
+ </el-menu-item>
+ <el-menu-item
+ :key="key"
+ v-for="(item,key) in leftNavItems"
+ :index="item.index"
+ :route="item.activeIndex"
+ >{{item.name}}</el-menu-item>
+ <el-submenu
+ style="float:right;width:100px;border:0;"
+ class="right-item"
+ v-if="Object.keys(rightNavItems).length === 0?false:true"
+ index="10"
+ >
+ <template slot="title">
+  <i class="el-icon-s-fold" style="font-size:28px;color:#2d2d2d;"></i>
+ </template>
+ <el-menu-item style="padding:0;width:100%;"
+  :key="key"
+  v-for="(item,key) in rightNavItems"
+  :index="item.index"
+  :route="item.activeIndex"
+ >{{item.name}}</el-menu-item>
+ </el-submenu>
+</el-menu>
   </div>
 </template>
 
@@ -35,6 +38,14 @@ export default {
        username:'',
        password:''
      },
+      
+ screenWidth: document.body.clientWidth,
+ navItems: [
+ { name: "Home", indexPath: "/home", index: "1" },
+ { name: "Subscribe", indexPath: "/subscribe", index: "2"},
+ { name: "About", indexPath: "/about", index: "3" },
+ { name: "More", indexPath: "/more", index: "4" }
+],
      rules:{
        username:[{
          required:true,message:"请输入用户名",trigger:'blur'
@@ -45,6 +56,34 @@ export default {
      }
    }
  },
+ watch: {
+ screenWidth(newValue) {
+ // 为了避免频繁触发resize函数导致页面卡顿，使用定时器
+ if (!this.timer) {
+  // 一旦监听到的screenWidth值改变，就将其重新赋给data里的screenWidth
+  this.screenWidth = newValue;
+  this.timer = true;
+  setTimeout(() => {
+  //console.log(this.screenWidth);
+  this.timer = false;
+  }, 400);
+ }
+ }
+},
+ computed: {
+
+ leftNavItems: function() {
+ return this.screenWidth >= 600 ? this.navItems : {};
+ },
+ rightNavItems: function() {
+ return this.screenWidth < 600 ? this.navItems : {};
+ }
+},
+mounted() {
+ window.onresize = () => {
+ this.screenWidth = document.body.clientWidth
+ }
+},
  methods:{
    submit(){
      this.$refs.ruleForm.validate((e) =>{
@@ -54,11 +93,20 @@ export default {
        this.$router.push({name:'index'})
      })
      
-   }
+   },
+   handleSelect(){
+   
  }
+ },
+ 
 }
 </script>
 
 <style>
-
+.nav{
+  border: 0;
+}
+ul,li{
+  padding: 0;
+}
 </style>
